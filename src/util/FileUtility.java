@@ -15,7 +15,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import vistas.Pane;
+import views.Pane;
 
 /**
  *
