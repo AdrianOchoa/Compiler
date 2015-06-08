@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package compilador;
+package compiler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import vistas.Pane;
+import views.Pane;
 
 /**
  *

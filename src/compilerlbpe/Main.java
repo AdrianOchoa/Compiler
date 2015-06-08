@@ -3,14 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package compiladorlbpe;
+package compilerlbpe;
 
-import controladores.MenuController;
-import controladores.PaneController;
-import controladores.FrameController;
+import controllers.MenuController;
+import controllers.PaneController;
+import controllers.FrameController;
 import menus.Menu;
-import vistas.Pane;
-import vistas.Frame;
+import views.Pane;
+import views.Frame;
 
 /**
  *

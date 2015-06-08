@@ -5,7 +5,7 @@
  */
 package menus;
 
-import controladores.MenuController;
+import controllers.MenuController;
 import javax.swing.ImageIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;

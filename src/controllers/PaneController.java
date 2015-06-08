@@ -3,11 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controladores;
+package controllers;
 
-import compilador.SemanticAnalyzer;
-import compilador.LPBE;
-import compilador.ParseException;
+import compiler.SemanticAnalyzer;
+import compiler.LPBE;
+import compiler.ParseException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileInputStream;
@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import util.FileUtility;
 import util.Message;
-import vistas.Pane;
+import views.Pane;
 
 /**
  *
