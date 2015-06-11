@@ -27,14 +27,14 @@ public class Menu extends JMenuBar {
     
     private void addComponentes() {
         jmMenu = new JMenu("Archivo");
-        String url = "/iconos/archivo.png";
+        String url = "/icons/archivo.png";
         ImageIcon imgIcon = new ImageIcon(getClass().getResource(url));
         jmMenu.setIcon(imgIcon);
         jmiOpen = new JMenuItem("Abrir");
-        url = "/iconos/abrir.png";
+        url = "/icons/abrir.png";
         jmiOpen.setIcon(new ImageIcon(getClass().getResource(url)));
         jmiSave = new JMenuItem("Guardar");
-        url = "/iconos/guardar.png";
+        url = "/icons/guardar.png";
         jmiSave.setIcon(new ImageIcon(getClass().getResource(url)));
         jmMenu.add(jmiOpen);
         jmMenu.addSeparator();

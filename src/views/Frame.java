@@ -41,7 +41,7 @@ public class Frame extends JFrame {
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(controlador);
         setContentPane(pane);
-        String url = "/iconos/main.png";
+        String url = "/icons/main.png";
         setIconImage(new ImageIcon(getClass().getResource(url)).getImage());
         setVisible(true);
         toFront();

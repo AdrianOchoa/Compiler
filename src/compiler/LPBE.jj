@@ -3,7 +3,7 @@ options {
 	STATIC = false;
 }
 PARSER_BEGIN(LPBE)
-	package compilador;
+	package compiler;
 	
 	import java.util.ArrayList;
 	
@@ -26,7 +26,6 @@ PARSER_BEGIN(LPBE)
 		}
 		
 		public static void registraLogSintactico(String mensaje){
-            //System.out.println(mensaje);
             erroresSintacticos.append(mensaje).append("\n");
         }
 		
@@ -311,7 +310,7 @@ SKIP : {
 	" " 
 	|"\r" 
 	|"\t" 
-	|"\n" 
+	|"\n"
 }
 
 /*
@@ -326,15 +325,20 @@ boolean ejecutarAnalisisSintactico () : {} {
 						estructuraDelPrograma()
 							try {
 								<LLAVE_CIERRE><FIN> try {
-									<PARENTESIS_APERTURA><PARENTESIS_CIERRE><EOF>
+									<PARENTESIS_APERTURA><PARENTESIS_CIERRE>	
+									try {
+										<EOF>
+									} catch (ParseException ex) {
+										registraErrorSintactico("Error sintactico, no puede haber nada fuera del programa", ex.currentToken.next);
+									}
 								} catch (ParseException ex) {
 									registraErrorSintactico("Error sintactico, faltan parentesis.", ex.currentToken.next);
 								}
 							} catch (ParseException ex) {
-								//registraErrorSintactico("Error sintactico, falta fin de la funcion principal.", ex.currentToken.next);
+								registraErrorSintactico("Error sintactico, problema en la funcion principal", ex.currentToken.next);
 							}
 					} catch (ParseException ex) {
-						
+						registraErrorSintactico("Error sintactico, problema en la funcion principal", ex.currentToken.next);
 					}
 			} catch (ParseException ex) {
 				registraErrorSintactico("Error sintactico, faltan parentesis.", ex.currentToken.next);
@@ -350,11 +354,11 @@ Este método permite convocar cualquiera de las estrucutras creadas
 void estructuraDelPrograma () : {} {
 	(crearVariable()
 	|crearFuncion()
-	|estructuraFor()
 	|estructuraIf()
 	|estructuraDoWhile()
 	|estructuraWhile()
 	|estructuraSwitch()
+	|estructuraFor()
 	|impresion()<DELIMITADOR>
 	|lectura()<DELIMITADOR>)*
 }
@@ -364,11 +368,11 @@ Esta gramática permite la creación de una variable
 */
 void crearVariable() : {} {
 	crearVariableSencilla()
-	try{
+	//try{
 		(asignacion())?<DELIMITADOR>
-	} catch (ParseException ex) {
-		registraErrorSintactico("Error sintactico en la declaracion de una variable.", ex.currentToken.next);
-	}
+	//} catch (ParseException ex) {
+		//registraErrorSintactico("Error sintactico en la declaracion de una variable.", ex.currentToken.next);
+	//}
 }
 
 /*
@@ -411,11 +415,11 @@ Esta gramática verifica la correcta declaracion de un switch case
 */
 void estructuraSwitch () : {} {
 	<CAMBIO>
-	try {
-		<PARENTESIS_APERTURA><IDENTIFICADOR><PARENTESIS_CIERRE><LLAVE_APERTURA>casos()(predeterminado())?<LLAVE_CIERRE>
-	} catch (ParseException ex) {
-		registraErrorSintactico("Error sintactico en el switch case", ex.currentToken.next);
-	}
+	//try {
+	<PARENTESIS_APERTURA><IDENTIFICADOR><PARENTESIS_CIERRE><LLAVE_APERTURA>casos()(predeterminado())?<LLAVE_CIERRE>
+	//} catch (ParseException ex) {
+		//registraErrorSintactico("Error sintactico en el switch case", ex.currentToken.next);
+	//}
 }
 
 /*
@@ -437,11 +441,11 @@ Esta gramática corresponde a un if, con un else que puede o no venir
 */
 void estructuraIf () : {} {
 	<SI>
-	try {
+	//try {
 		<PARENTESIS_APERTURA><IDENTIFICADOR>condiciones()(condicionesAdicionales())?<PARENTESIS_CIERRE><LLAVE_APERTURA>cuerpo()<LLAVE_CIERRE>(estructuraElse())?
-	} catch (ParseException ex) {
-		registraErrorSintactico("Error sintactico en el if", ex.currentToken.next);
-	}
+	//} catch (ParseException ex) {
+		//registraErrorSintactico("Error sintactico en el if", ex.currentToken.next);
+	//}
 }
 
 /*
@@ -514,34 +518,34 @@ void diferenteIgual() : {} {
 Esta gramática verifica la declaración de un ciclo while
 */
 void estructuraWhile () : {}{
-	<MIENTRAS> try {
+	<MIENTRAS> //try {
 		<PARENTESIS_APERTURA><IDENTIFICADOR>(condicionBooleana()|condicionAritmetica())(condicionesAdicionales())?<PARENTESIS_CIERRE><LLAVE_APERTURA>cuerpo()<LLAVE_CIERRE>
-	} catch (ParseException ex) {
-		registraErrorSintactico("Error sintactico en el while", ex.currentToken.next);
-	}
+	//} catch (ParseException ex) {
+		//registraErrorSintactico("Error sintactico en el while", ex.currentToken.next);
+	//}
 }
 
 /*
 Esta gramática verifica la correcta declaración de un do while
 */
 void estructuraDoWhile() : {}{
-	<HACER> try {
+	<HACER> //try {
 		<LLAVE_APERTURA>cuerpo()<LLAVE_CIERRE><MIENTRAS><PARENTESIS_APERTURA><IDENTIFICADOR>(condicionBooleana()|condicionAritmetica())(condicionesAdicionales())?<PARENTESIS_CIERRE>
-		} catch (ParseException ex) {
-			registraErrorSintactico("Error sintactico en el do while", ex.currentToken.next);
-		}
+		//} catch (ParseException ex) {
+			//registraErrorSintactico("Error sintactico en el do while", ex.currentToken.next);
+		//}
 }
 
 /*
 Esta gramática verifica la correcta declaración de un for
 */
 void estructuraFor () : {} {
-	<PARA> try {
+	<PARA> //try {
 		<PARENTESIS_APERTURA>(tokensTiposDatos())?<IDENTIFICADOR><ASIGNACION><VALOR_ENTERO><DELIMITADOR>
 		<IDENTIFICADOR>comparacionesFor()<VALOR_ENTERO><DELIMITADOR><IDENTIFICADOR>asignacionesFor()<PARENTESIS_CIERRE><LLAVE_APERTURA>cuerpo()<LLAVE_CIERRE> 
-		} catch (ParseException ex) {
-			registraErrorSintactico("Error sintactico en el for", ex.currentToken.next);
-		}
+		//} catch (ParseException ex) {
+			//registraErrorSintactico("Error sintactico en el for", ex.currentToken.next);
+		//}
 }
 
 /*
@@ -569,11 +573,11 @@ Este método maneja la gramática para la creación de funciones, con o sin par�
 */
 void crearFuncion() : {} {
 	<FUNCION>
-		try {
+		//try {
 			<IDENTIFICADOR><PARENTESIS_APERTURA>(parametro())?(parametros())?<PARENTESIS_CIERRE><LLAVE_APERTURA>cuerpo()<LLAVE_CIERRE>
-		} catch (ParseException ex) {
-			registraErrorSintactico("Error sintactio en la funcion", ex.currentToken.next);
-		}
+		//} catch (ParseException ex) {
+			//registraErrorSintactico("Error sintactico en la funcion", ex.currentToken.next);
+		//}
 }
 
 /*
@@ -594,12 +598,12 @@ void parametros () : {} {
 Esta gramática sirve para identificar las estrucutras permitidas dentro de una función, ciclo, etcétera.
 */
 void cuerpo () : {} {
-	(estructuraFor()
+	(crearVariable()
+	|operacionBasica()
 	|estructuraIf()
-	|crearVariable()
+	|estructuraFor()
 	|estructuraWhile()
 	|estructuraDoWhile()
-	|operacionBasica()
 	|lectura()<DELIMITADOR>
 	|impresion()<DELIMITADOR>)*
 }
@@ -612,22 +616,22 @@ void operacionBasica() : {} {
 Gramática que permite la impresión de datos en pantalla
 */
 void impresion () : {} {
-	try { 
+	//try { 
 		<IMPRIMIR><PARENTESIS_APERTURA>(tipoDatoExpresionRegular()|<IDENTIFICADOR>)<PARENTESIS_CIERRE>
-	} catch (ParseException ex) {
-		registraErrorSintactico("Error sintactico en la impresion", ex.currentToken.next);
-	}
+	//} catch (ParseException ex) {
+		//registraErrorSintactico("Error sintactico en la impresion", ex.currentToken.next);
+	//}
 }
 
 /*
 Gramática que permite la lectura de datos
 */
 void lectura () : {} {
-	try {
+	//try {
 		<ESCRIBIR><PARENTESIS_APERTURA>tipoDatoExpresionRegular()<PARENTESIS_CIERRE>
-	} catch (ParseException ex) {
-		registraErrorSintactico("Error sintactico en la lectura", ex.currentToken.next);
-	}
+	//} catch (ParseException ex) {
+		//registraErrorSintactico("Error sintactico en la lectura", ex.currentToken.next);
+	//}
 }
 
 /*

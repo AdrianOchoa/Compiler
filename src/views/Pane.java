@@ -47,8 +47,8 @@ public class Pane extends JPanel {
         jbCompile = new JButton("Compilar");
         jbClear = new JButton("Limpiar");
         getJbCompile().setEnabled(true);
-        getJbCompile().setIcon(new ImageIcon(getClass().getResource("/iconos/compila.png")));
-        jbClear.setIcon(new ImageIcon(getClass().getResource("/iconos/limpiar.png")));
+        getJbCompile().setIcon(new ImageIcon(getClass().getResource("/icons/compila.png")));
+        jbClear.setIcon(new ImageIcon(getClass().getResource("/icons/limpiar.png")));
         
         JPanel auxSouthPane = new JPanel();
         
@@ -68,7 +68,7 @@ public class Pane extends JPanel {
         JPanel resultSouthPane = new JPanel();
         jbSaveResults = new JButton("Guardar Resultados");
         getJbSaveResults().setEnabled(false);
-        getJbSaveResults().setIcon(new ImageIcon(getClass().getResource("/iconos/guardar.png")));
+        getJbSaveResults().setIcon(new ImageIcon(getClass().getResource("/icons/guardar.png")));
         resultSouthPane.add(getJbSaveResults());
         
         southPane.add(resultPane, BorderLayout.CENTER);
