@@ -6,6 +6,7 @@
 package compiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import views.Pane;
@@ -18,7 +19,26 @@ public class SemanticAnalyzer {
 
     private final ArrayList<String> dataTypes;
     private final ArrayList<String> operators;
+    private final ArrayList<String> reservedWords;
     private String code;
+    private boolean [] positions;
+
+    /**
+     * Constructs a new Object to be analyzed, with a specic set of data types
+     * and operators
+     *
+     * @param code to be analyzed
+     * @param dataTypes the data types of the specified languague
+     * @param operators the operators of the specified languague
+     * @param reservedWords the reserved words of the specified languague
+     */
+    public SemanticAnalyzer(String code, ArrayList<String> dataTypes,
+            ArrayList<String> operators, ArrayList<String> reservedWords) {
+        this.code = code;
+        this.dataTypes = dataTypes;
+        this.operators = operators;
+        this.reservedWords = reservedWords;
+    }
 
     /**
      * Constructs a new Object to be analyzed
@@ -26,9 +46,7 @@ public class SemanticAnalyzer {
      * @param code to be analyzed
      */
     public SemanticAnalyzer(String code) {
-        dataTypes = getDataTypes();
-        operators = getOperators();
-        this.code = code;
+        this(code, getDataTypes(), getOperators(), getReservedWords());
     }
 
     /**
@@ -39,39 +57,20 @@ public class SemanticAnalyzer {
     public void runSemanticAnalysis(Pane pane) {
         processCode();
         String[] tokens = code.split("[ ]+");
+        positions = new boolean[tokens.length];
+        Arrays.fill(positions, true);
         StringBuilder messages = new StringBuilder();
         HashMap<String, Identifier> globalVariables = new HashMap();
         HashMap<String, Function> functions = new HashMap();
         HashMap<String, Identifier> parameters = new HashMap();
         HashMap<String, Identifier> localVariables = new HashMap();
-        addVariables(tokens, messages, globalVariables);
+//        addVariables(tokens, messages, globalVariables);
         addFunctions(tokens, messages, globalVariables,
                 parameters, localVariables, functions);
-//        verifyOperations(tokens, messages, localVariables, functions);
+        addVariables(tokens, messages, globalVariables);
         addMessages(pane, messages);
     }
 
-//    /**
-//     * this method ensures that all operations of this code are correct
-//     * @param tokens the array of tokens
-//     * @param messages a StringBuilder which will be added the messages
-//     * @param variables a HashMap that contains all the global variables from a code
-//     * @param functions a HashMap that contains all the functions from a code
-//     */
-//    private void verifyOperations(String[] tokens,
-//            StringBuilder messages,
-//            HashMap<String, Identifier> variables,
-//            HashMap<String, Function> functions) {
-//        String op1, op2;
-//        for (int i = 0; i < tokens.length; i++) {
-//            String operator = tokens[i].trim();
-//            if(operator.matches("[=]")) {
-//                op1 = tokens[i - 1];
-//                op2 = tokens[i + 1];
-//                System.out.println(op1 + " " + op2);
-//            }
-//        }
-//    }
     /**
      * this method adds all the global variables from a code to a specified
      * HashMap
@@ -86,18 +85,18 @@ public class SemanticAnalyzer {
         int endVariablesDeclarations;
         messages.append("Variables encontradas:\n");
         for (int i = 0; i < tokens.length; i++) {
-            if (dataTypes.contains(tokens[i].trim())) {
-                switch (tokens[i - 1].trim()) {
-                    case "(":
-                        continue;
-                    case "{":
-                        if (!tokens[i - 4].equals("INICIO")) {
-                            continue;
-                        }
-                        break;
-                    case ",":
-                        continue;
-                }
+            if (dataTypes.contains(tokens[i].trim()) && positions[i]) {
+//                switch (tokens[i - 1].trim()) {
+//                    case "(":
+//                        continue;
+////                    case "{":
+////                        if (!tokens[i - 4].equals("INICIO")) {
+////                            continue;
+////                        }
+////                        break;
+//                    case ",":
+//                        continue;
+//                }
                 String type = tokens[i].trim();
                 boolean flag = true;
                 endVariablesDeclarations = findEndVariablesDeclarations(i, tokens);
@@ -208,7 +207,9 @@ public class SemanticAnalyzer {
                                 .append("\n");
                     }
                 }
+                int aux = i;
                 i = endStatements;
+                Arrays.fill(positions, aux, i, false);
             }
         }
     }
@@ -297,7 +298,7 @@ public class SemanticAnalyzer {
      */
     private String getFunctionParameters(HashMap<String, Identifier> auxParameters, String parameters) {
         parameters = auxParameters.entrySet().stream().map((e) -> (Identifier) e.getValue())
-                .map((id) -> id.getName() + " de tipo " + id.getType()+ " ").reduce(parameters, String::concat);
+                .map((id) -> id.getName() + " de tipo " + id.getType() + " ").reduce(parameters, String::concat);
         return parameters.trim();
     }
 
@@ -382,23 +383,8 @@ public class SemanticAnalyzer {
      * @param messages the result of the semantic analysis
      */
     private void addMessages(Pane pane, StringBuilder messages) {
-        pane.getJtResultsArea().setText(pane.getJtResultsArea().getText()
+        pane.getJpResultsArea().setText(pane.getJpResultsArea().getText()
                 + "\nResultado del analisis semantico:\n" + messages.toString());
-    }
-
-    /**
-     *
-     * @return an ArrayList containig the basic data types of the language
-     */
-    private ArrayList<String> getDataTypes() {
-        ArrayList<String> basicDataTypes = new ArrayList();
-        basicDataTypes.add("NUMERO");
-        basicDataTypes.add("FLOTANTE");
-        basicDataTypes.add("CARACTER");
-        basicDataTypes.add("CADENA");
-        basicDataTypes.add("BOOLEANO");
-        basicDataTypes.add("VACIO");
-        return basicDataTypes;
     }
 
     /**
@@ -419,9 +405,48 @@ public class SemanticAnalyzer {
 
     /**
      *
+     * @return an ArrayList containing the reserved words of the languague
+     */
+    public static ArrayList<String> getReservedWords() {
+        ArrayList<String> reserved = new ArrayList();
+        reserved.add("INICIO");
+        reserved.add("FIN");
+        reserved.add("ESCRIBIR");
+        reserved.add("IMPRIMIR");
+        reserved.add("SI");
+        reserved.add("SINO");
+        reserved.add("CAMBIO");
+        reserved.add("OPCION");
+        reserved.add("ROMPER");
+        reserved.add("DEFECTO");
+        reserved.add("CONTINUAR");
+        reserved.add("MIENTRAS");
+        reserved.add("HACER");
+        reserved.add("PARA");
+        reserved.add("FUNCION");
+        return reserved;
+    }
+
+    /**
+     *
+     * @return an ArrayList containig the basic data types of the language
+     */
+    public static ArrayList<String> getDataTypes() {
+        ArrayList<String> basicDataTypes = new ArrayList();
+        basicDataTypes.add("NUMERO");
+        basicDataTypes.add("FLOTANTE");
+        basicDataTypes.add("CARACTER");
+        basicDataTypes.add("CADENA");
+        basicDataTypes.add("BOOLEANO");
+        basicDataTypes.add("VACIO");
+        return basicDataTypes;
+    }
+
+    /**
+     *
      * @return an ArrayList containing the operators of the language
      */
-    private ArrayList<String> getOperators() {
+    private static ArrayList<String> getOperators() {
         ArrayList<String> basicOperators = new ArrayList();
         basicOperators.add("\\+");
         basicOperators.add("\\++");

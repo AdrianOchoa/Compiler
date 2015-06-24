@@ -5,77 +5,91 @@
  */
 package views;
 
+import compiler.SemanticAnalyzer;
 import controllers.PaneController;
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
-import org.itver.componentlibrary.component.CodeEditor;
+import javax.swing.JTextPane;
+import javax.swing.text.AbstractDocument;
+import util.views.CodeEditor;
+import util.views.styles.CustomDocumentFilter;
 
 /**
  *
  * @author Adrián
  */
 public class Pane extends JPanel {
-    
+
     private JButton jbCompile;
     private JButton jbClear;
     private JButton jbSaveResults;
-    private JTextArea jtResultsArea;
+    private JTextPane jpResultsArea;
     private PaneController paneController;
     private CodeEditor ce;
-    
+
     public Pane() {
-        setLayout(new BorderLayout());
+        setLayout(new GridLayout(2, 1));
         setBorder(BorderFactory.createLineBorder(getBackground(), 10));
         addComponents();
     }
-    
+
     private void addComponents() {
-        jtResultsArea = new JTextArea(10, 20);
         
-        JPanel southPane = new JPanel(new BorderLayout());
-        
-        southPane.setBorder(BorderFactory.createLineBorder(getBackground(), 15));
-        
-        getJtResultsArea().setEditable(false);
-        
+        jpResultsArea = new JTextPane();
+        jpResultsArea.setEditable(false);
+
         jbCompile = new JButton("Compilar");
         jbClear = new JButton("Limpiar");
-        getJbCompile().setEnabled(true);
-        getJbCompile().setIcon(new ImageIcon(getClass().getResource("/icons/compila.png")));
+        jbCompile.setEnabled(true);
+        jbCompile.setIcon(new ImageIcon(getClass().getResource("/icons/compila.png")));
         jbClear.setIcon(new ImageIcon(getClass().getResource("/icons/limpiar.png")));
-        
-        JPanel auxSouthPane = new JPanel();
-        
-        auxSouthPane.add(getJbCompile());
-        auxSouthPane.add(new JLabel(""));
-        auxSouthPane.add(jbClear);
-        
+
         JPanel centerPane = new JPanel(new BorderLayout());
-        ce = new CodeEditor();
-        centerPane.add(ce, BorderLayout.CENTER);
-        centerPane.add(auxSouthPane, BorderLayout.SOUTH);
         
-        JScrollPane resultPane = new JScrollPane(getJtResultsArea());
+        JPanel centerSouthPane = new JPanel();
+        centerSouthPane.add(jbCompile);
+        centerSouthPane.add(new JLabel("      "));
+        centerSouthPane.add(jbClear);
+        
+        ce = new CodeEditor();
+        
+        ArrayList<String> array = SemanticAnalyzer.getDataTypes();
+        for (int i = 0; i < SemanticAnalyzer.getReservedWords().size(); i++) {
+            array.add(SemanticAnalyzer.getReservedWords().get(i));
+        }
+        ((AbstractDocument) ce.getCodeArea().getDocument()).setDocumentFilter(
+                new CustomDocumentFilter(ce.getCodeArea(), array));
+        centerPane.add(ce, BorderLayout.CENTER);
+        centerPane.add(centerSouthPane, BorderLayout.SOUTH);
+
+        JScrollPane resultPane = new JScrollPane(jpResultsArea);
         resultPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         resultPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        
+
         JPanel resultSouthPane = new JPanel();
-        jbSaveResults = new JButton("Guardar Resultados");
-        getJbSaveResults().setEnabled(false);
-        getJbSaveResults().setIcon(new ImageIcon(getClass().getResource("/icons/guardar.png")));
-        resultSouthPane.add(getJbSaveResults());
         
+        jbSaveResults = new JButton("Guardar Resultados");
+        
+        jbSaveResults.setEnabled(false);
+        jbSaveResults.setIcon(new ImageIcon(getClass().getResource("/icons/guardar.png")));
+        resultSouthPane.add(jbSaveResults);
+        
+        JPanel southPane = new JPanel(new BorderLayout());
+        southPane.setBorder(BorderFactory.createLineBorder(getBackground(), 10));
+        southPane.setLayout(new BorderLayout());
+
         southPane.add(resultPane, BorderLayout.CENTER);
         southPane.add(resultSouthPane, BorderLayout.SOUTH);
         
-        add(centerPane, BorderLayout.CENTER);
-        add(southPane, BorderLayout.SOUTH);
+        add(centerPane);
+        add(southPane);
     }
 
     /**
@@ -90,8 +104,8 @@ public class Pane extends JPanel {
      */
     public void setPaneController(PaneController paneController) {
         this.paneController = paneController;
-        getJbCompile().addActionListener(paneController);
-        getJbSaveResults().addActionListener(paneController);
+        jbCompile.addActionListener(paneController);
+        jbSaveResults.addActionListener(paneController);
         jbClear.addActionListener(paneController);
     }
 
@@ -112,8 +126,8 @@ public class Pane extends JPanel {
     /**
      * @return the jtResultsArea
      */
-    public JTextArea getJtResultsArea() {
-        return jtResultsArea;
+    public JTextPane getJpResultsArea() {
+        return jpResultsArea;
     }
 
     /**
@@ -122,5 +136,5 @@ public class Pane extends JPanel {
     public JButton getJbSaveResults() {
         return jbSaveResults;
     }
-    
+
 }

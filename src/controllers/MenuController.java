@@ -52,7 +52,7 @@ public class MenuController implements ActionListener {
     }
     
     private void updateLines() {
-        int linesCount = pane.getCe().getCodeArea().getLineCount();
+        int linesCount = pane.getCe().getCodeArea().getText().split("\n").length;
         String lines = "";
         for (int i = 0; i < linesCount; i++) {
             lines += (i + 1) + "\n";

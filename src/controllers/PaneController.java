@@ -72,7 +72,7 @@ public class PaneController implements ActionListener {
     }
 
     private void clearResults() {
-        pane.getJtResultsArea().setText("");
+        pane.getJpResultsArea().setText("");
     }
 
     private void showResults() {
@@ -82,12 +82,12 @@ public class PaneController implements ActionListener {
             sb.append(LPBE.getLista().get(i)).append("\n");
         }
         LPBE.getLista().clear();
-        pane.getJtResultsArea().setText(sb.toString());
+        pane.getJpResultsArea().setText(sb.toString());
     }
 
     private void saveResults() {
         try {
-            FileUtility.saveToFile(pane.getJtResultsArea().getText());
+            FileUtility.saveToFile(pane.getJpResultsArea().getText());
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Message.showErrorMessage("Error al guardar resultados\n" + ex.getMessage());
         }

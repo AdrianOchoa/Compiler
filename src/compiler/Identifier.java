@@ -19,7 +19,6 @@ public class Identifier {
      * @param type the basic data type od the identifier
      * @param name the name
      */
-    
     public Identifier(String type, String name) {
         this.name = name;
         this.type = type;
@@ -31,7 +30,6 @@ public class Identifier {
     
     public String getType() {
         return type;
-        
     }
     
 }

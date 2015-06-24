@@ -19,18 +19,17 @@ import menus.Menu;
  */
 public class Frame extends JFrame {
 
-    public Frame(String title, Menu menu, Pane pane, FrameController controller) {
+    public Frame(String title, Menu menu, Pane pane) {
         super(title);
         try {
-            initFrame(menu, pane, controller);
-        } catch (ClassNotFoundException | InstantiationException | 
+            initFrame(menu, pane);
+        } catch (ClassNotFoundException | InstantiationException |
                 IllegalAccessException | UnsupportedLookAndFeelException ex) {
             System.out.println(ex + "\n" + ex.getMessage());
         }
     }
 
-    private void initFrame(Menu menu, Pane pane,
-            FrameController controlador) throws
+    private void initFrame(Menu menu, Pane pane) throws
             ClassNotFoundException, InstantiationException,
             IllegalAccessException, UnsupportedLookAndFeelException {
         UIManager.setLookAndFeel(getSystemLookAndFeelClassName());
@@ -39,12 +38,15 @@ public class Frame extends JFrame {
         setJMenuBar(menu);
         setResizable(false);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        addWindowListener(controlador);
         setContentPane(pane);
         String url = "/icons/main.png";
         setIconImage(new ImageIcon(getClass().getResource(url)).getImage());
         setVisible(true);
         toFront();
+    }
+
+    public void setController(FrameController frameController) {
+        addWindowListener(frameController);
     }
 
 }

@@ -9,6 +9,7 @@ import controllers.MenuController;
 import controllers.PaneController;
 import controllers.FrameController;
 import menus.Menu;
+import util.views.ScreenSplash;
 import views.Pane;
 import views.Frame;
 
@@ -24,6 +25,8 @@ public class Main {
     public static void main(String[] args) {
         // TODO code application logic here
 
+        new ScreenSplash().load();
+        
         Pane pane = new Pane();
 
         MenuController menuController = new MenuController(pane);
@@ -34,9 +37,10 @@ public class Main {
 
         Menu menu = new Menu();
 
-        menu.addEvents(menuController);
+        menu.setController(menuController);
 
-        Frame frame = new Frame("Compilador LBPE", menu, pane, frameController);
+        Frame frame = new Frame("Compilador LBPE", menu, pane);
+        frame.setController(frameController);
 
     }
 

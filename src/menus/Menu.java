@@ -42,7 +42,7 @@ public class Menu extends JMenuBar {
         this.add(jmMenu);
     }
     
-    public void addEvents(MenuController menuController) {
+    public void setController(MenuController menuController) {
         jmiOpen.addActionListener(menuController);
         jmiSave.addActionListener(menuController);
     }
